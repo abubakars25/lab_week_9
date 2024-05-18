@@ -1,0 +1,76 @@
+#NAMES: Abu Bakar Siddique
+#CNET ID: abubakars
+#GitHub ID: abubakars25
+
+# Create a rock-paper-scissors game!
+# - Play once and report the result
+# - Play in a loop and record how many wins and losses happen?
+# - Allow choosing how many human players there are, from 0-2?
+# - Organize everything into functions?
+# - Organize everything into classes??
+
+from numpy import random
+
+choices = ['rock', 'paper', 'scissors']
+
+p1 = input('Pick one of rock, paper or scissors: ')
+p2 = random.choice(choices)
+
+
+
+import random
+
+class Participant:
+    def __init__(self, alias, human=True):
+        self.alias = alias
+        self.human = human
+        self.choice = None
+
+    def make_choice(self):
+        if self.human:
+            self.choice = input(f'{self.alias}, choose rock, paper, or scissors: ').lower()
+            while self.choice not in ['rock', 'paper', 'scissors']:
+                self.choice = input(f'{self.alias}, invalid choice. Choose rock, paper, or scissors: ').lower()
+        else:
+            self.choice = random.choice(['rock', paper, 'scissors'])  # Deliberate mistake: missing quotes around 'paper'
+        print(f'{self.alias} chose {self.choice}')
+
+class Game:
+    def __init__(self, human_count=1):
+        self.players = [Participant(f"Player {i+1}", i < human_count) for i in range(2)]
+        self.results = {"wins": 0, "losses": 0, "ties": 0}
+
+    def determine_winner(self, choice1, choice2):
+        if choice1 == choice2:
+            return 'tie'
+        elif (choice1 == 'rock' and choice2 == 'scissors') or \
+             (choice1 == 'scissors' and choice2 == 'paper') or \
+             (choice1 == 'paper' and choice2 == 'rock'):
+            return 'player1'
+        return 'player2'
+
+    def play_round(self):
+        for player in self.players:
+            player.make_choice()
+        result = self.determine_winner(self.players[0].choice, self.players[1].choice)
+        if result == 'tie':
+            self.results['ties'] += 1
+            print('It\'s a tie!')
+        elif result == 'player1':
+            self.results['wins'] += 1
+            print(f'{self.players[0].alias} wins!')
+        else:
+            self.results['losses'] += 1
+            print(f'{self.players[1].alias} wins!')
+
+    def start(self, rounds=1):
+        for _ in range(rounds):
+            self.play_round()
+        print(f"Results after {rounds} rounds: Wins: {self.results['wins']}, Losses: {self.results['losses']}, Ties: {self.results['ties']}")
+
+if __name__ == "__main__":
+    human_count = int(input("Enter number of human players (0, 1, or 2): "))
+    rounds = int(input("Enter number of rounds to play: "))
+    game = Game(human_count)
+    game.start(rounds)
+
